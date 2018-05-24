@@ -13,10 +13,27 @@ public class RabbitControl : MonoBehaviour {
     public float MaxJumpTime = 2f;
     public float JumpSpeed = 2f;
 
+    Transform rabbitParent = null;
+
+    bool isBig;
+    Vector3 standartSize;
+    Vector3 bigSize;
+    int countBomb = 0;
+    float timeToWait = 4;
+    bool bombBonus = false;
+    bool afterMushroom = false;
+
+    Animator animator;
+
     // Use this for initialization
     void Start () {
         myBody = this.GetComponent<Rigidbody2D>();
         LevelController.current.setStartPosition(transform.position);
+        this.rabbitParent = this.transform.parent;
+        isBig = false;
+        standartSize = this.transform.localScale;
+        bigSize.Set(standartSize.x * 1.5f, standartSize.y * 1.5f, standartSize.z);
+        animator = this.GetComponent<Animator>();
     }
 	
 	// Update is called once per frame
@@ -26,7 +43,21 @@ public class RabbitControl : MonoBehaviour {
 
     void FixedUpdate()
     {
-        Animator animator = GetComponent<Animator>();
+        if (afterMushroom && countBomb >= 1)
+        {
+            bombBonus = true;
+            this.GetComponent<Renderer>().material.color = Color.red;
+            timeToWait -= Time.deltaTime;
+            if (timeToWait <= 0)
+            {
+                bombBonus = false;
+                timeToWait = 4;
+                countBomb = 0;
+                afterMushroom = false;
+                this.GetComponent<Renderer>().material.color = Color.white;
+            }
+        }
+        
         float runVal = Input.GetAxis("Horizontal");
         if (Mathf.Abs(runVal) > 0)
         {
@@ -77,6 +108,80 @@ public class RabbitControl : MonoBehaviour {
             animator.SetBool("jump", false);
         else
             animator.SetBool("jump", true);
+
+        RaycastHit2D hit_gr = Physics2D.Linecast(from, to, layer_id);
+        if (hit_gr)
+        {
+            if (hit_gr.transform != null && hit_gr.transform.GetComponent<MovingPlatform>() != null)
+            {
+                SetNewParent(this.transform, hit_gr.transform);
+            }
+        }
+        else
+        {
+            SetNewParent(this.transform, this.rabbitParent);
+        }
+    }
+
+    static void SetNewParent(Transform obj, Transform new_parent)
+    {
+        if (obj.transform.parent != new_parent)
+        {
+            Vector3 pos = obj.transform.position;
+            obj.transform.parent = new_parent;
+            obj.transform.position = pos;
+        }
+    }
+
+    public void setBig()
+    {
+        isBig = true;
+        this.transform.localScale = bigSize;
+    }
+
+    public void setSmall()
+    {
+        isBig = false;
+        this.transform.localScale = standartSize;
+    }
+
+    public bool getBig()
+    {
+        return isBig;
+    }
+
+    public void addBomb()
+    {
+        countBomb++;
+    }
+
+    public bool getBombBonus()
+    {
+        return bombBonus;
+    }
+
+    public void setAfterMushroom(bool val)
+    {
+        afterMushroom = val;
+    }
+
+    public bool getAfterMushroom()
+    {
+        return afterMushroom;
+    }
+
+    public void die()
+    {
+        animator.SetBool("die", true);
+        StartCoroutine(Wait());
+    }
+
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        animator.SetBool("die", false);
+        animator.SetBool("stay", true);
+        LevelController.current.onRabitDeath(this);
     }
 
 }
