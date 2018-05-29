@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RabbitControl : MonoBehaviour {
 
+    public static RabbitControl rabbit = null;
+
     public float speed = 2;
     Rigidbody2D myBody = null;
 
@@ -27,6 +29,7 @@ public class RabbitControl : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        rabbit = this;
         myBody = this.GetComponent<Rigidbody2D>();
         LevelController.current.setStartPosition(transform.position);
         this.rabbitParent = this.transform.parent;
@@ -65,7 +68,7 @@ public class RabbitControl : MonoBehaviour {
             vel.x = runVal * speed;
             myBody.velocity = vel;
         }
-        if (Mathf.Abs(runVal) > 0)
+        if (Mathf.Abs(runVal) > 0 && !JumpActive && isGrounded)
             animator.SetBool("run", true);
         else
             animator.SetBool("run", false);
