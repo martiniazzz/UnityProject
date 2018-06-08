@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GreenOrkControl : MonoBehaviour {
 
+    public float len = 2;
+
     Vector3 pointA;
     Vector3 pointB;
     float fixedspeed = 1f;
@@ -21,14 +23,19 @@ public class GreenOrkControl : MonoBehaviour {
     Mode mode;
     bool isAttack = false;
 
+    private void Awake()
+    {
+        pointA = this.transform.localPosition;
+        pointB = this.transform.localPosition;
+        pointB.Set(pointB.x + len, pointB.y, 0);
+        Debug.Log(pointA + "  " + pointB);
+    }
+
     void Start () {
         speed = fixedspeed;
         ork = this.GetComponent<Rigidbody2D>();
         animator = this.GetComponent<Animator>();
         mode = Mode.GoToA;
-        pointA = this.transform.position;
-        pointB = this.transform.position;
-        pointB.Set(pointA.x + 5, pointB.y, 0);
         animator.SetBool("walk", true);
     }
 	
@@ -47,18 +54,23 @@ public class GreenOrkControl : MonoBehaviour {
         {
             sr.flipX = false;
             if (isArrived(pointA))
+            {
                 mode = Mode.GoToB;
+            }
+                
         }
         else if (!isAttack && mode == Mode.GoToB)
         {
             sr.flipX = true;
             if (isArrived(pointB))
+            {
                 mode = Mode.GoToA;
+            }
         }
 
         Vector3 rabbit_pos = RabbitControl.rabbit.transform.position;
-        Vector3 my_pos = this.transform.position;
-        if (rabbit_pos.x + 1 >= Mathf.Min(pointA.x, pointB.x) && rabbit_pos.x + 1 <= Mathf.Max(pointA.x, pointB.x))
+        Vector3 my_pos = this.transform.localPosition;
+        if (rabbit_pos.x >= Mathf.Min(pointA.x, pointB.x) && rabbit_pos.x <= Mathf.Max(pointA.x, pointB.x))
         {
             isAttack = true;
         }
@@ -72,7 +84,7 @@ public class GreenOrkControl : MonoBehaviour {
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         Vector3 rabbit_pos = RabbitControl.rabbit.transform.position;
-        Vector3 my_pos = this.transform.position;
+        Vector3 my_pos = this.transform.localPosition;
         if (isAttack)
         {
             if (my_pos.x < rabbit_pos.x)
@@ -88,32 +100,18 @@ public class GreenOrkControl : MonoBehaviour {
         }
         else if (mode == Mode.GoToA)
         {
-            if (my_pos.x < pointA.x)
-            {
-                return 1;
-            }
-            else
-            {
-                return -1;
-            }
+            return -1;
         }
         else if (mode == Mode.GoToB)
         {
-            if (my_pos.x < pointB.x)
-            {
-                return 1;
-            }
-            else
-            {
-                return -1;
-            }
+            return 1;
         }
         return 0;
     }
 
     bool isArrived(Vector3 target)
     {
-        Vector3 pos = this.transform.position;
+        Vector3 pos = this.transform.localPosition;
         pos.z = 0;
         target.z = 0;
         return Vector3.Distance(pos, target) < 0.02f;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RabbitControl : MonoBehaviour {
 
@@ -14,6 +15,8 @@ public class RabbitControl : MonoBehaviour {
     float JumpTime = 0f;
     public float MaxJumpTime = 2f;
     public float JumpSpeed = 2f;
+
+    int lifes;
 
     Transform rabbitParent = null;
 
@@ -37,6 +40,7 @@ public class RabbitControl : MonoBehaviour {
         standartSize = this.transform.localScale;
         bigSize.Set(standartSize.x * 1.5f, standartSize.y * 1.5f, standartSize.z);
         animator = this.GetComponent<Animator>();
+        lifes = 3;
     }
 	
 	// Update is called once per frame
@@ -119,6 +123,10 @@ public class RabbitControl : MonoBehaviour {
             {
                 SetNewParent(this.transform, hit_gr.transform);
             }
+            else
+            {
+                SetNewParent(this.transform, hit_gr.transform);
+            }
         }
         else
         {
@@ -175,6 +183,7 @@ public class RabbitControl : MonoBehaviour {
 
     public void die()
     {
+        lifes--;
         animator.SetBool("die", true);
         StartCoroutine(Wait());
     }
@@ -183,8 +192,23 @@ public class RabbitControl : MonoBehaviour {
     {
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
         animator.SetBool("die", false);
-        animator.SetBool("stay", true);
-        LevelController.current.onRabitDeath(this);
+        if(lifes > 0)
+        {
+            animator.SetBool("stay", true);
+            LevelController.current.onRabitDeath(this);
+        }
+        else
+            SceneManager.LoadScene("Levels");
+    }
+
+    public int getLifes()
+    {
+        return lifes;
+    }
+
+    public void fall()
+    {
+        lifes--;
     }
 
 }
