@@ -43,6 +43,7 @@ public class SettingsScript : MonoBehaviour {
             getMusicButton().GetComponent<Image>().sprite = musicOn;
         else
             getMusicButton().GetComponent<Image>().sprite = musicOff;
+        SoundManager.Instance.setMusicOn(music);
     }
 
     void onSound()
@@ -52,6 +53,7 @@ public class SettingsScript : MonoBehaviour {
             getSoundButton().GetComponent<Image>().sprite = soundOn;
         else
             getSoundButton().GetComponent<Image>().sprite = soundOff;
+        SoundManager.Instance.setSoundOn(sound);
     }
 
     public Button getCloseButton()

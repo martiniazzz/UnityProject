@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class WinPanelScript : MonoBehaviour {
 
+    public AudioClip winSound = null;
+    AudioSource winSource = null;
+
     public Sprite blueCrSprite;
     public Sprite greenCrSprite;
     public Sprite redCrSprite;
@@ -40,8 +43,17 @@ public class WinPanelScript : MonoBehaviour {
         greenCr = GameObject.Find("GreenCrystalCol").GetComponent<Image>();
         redCr = GameObject.Find("RedCrystalCol").GetComponent<Image>();
     }
-	
-	public void showStatistic(int coins, int fruits, int maxFruits, bool blue, bool green, bool red)
+
+    void Start()
+    {
+        Debug.Log("Win music play");
+        winSource = gameObject.AddComponent<AudioSource>();
+        winSource.clip = winSound;
+        winSource.loop = false;
+        winSource.Play();
+    }
+
+    public void showStatistic(int coins, int fruits, int maxFruits, bool blue, bool green, bool red)
     {
         if (blue)
             blueCr.sprite = blueCrSprite;

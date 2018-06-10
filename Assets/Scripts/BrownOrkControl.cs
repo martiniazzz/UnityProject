@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class BrownOrkControl : MonoBehaviour {
 
+    public AudioClip attackSound = null;
+    AudioSource source = null;
+
     public float len = 3;
     public GameObject prefabCarrot;
 
@@ -29,6 +32,9 @@ public class BrownOrkControl : MonoBehaviour {
     bool isAttack;
 
     void Start () {
+        source = gameObject.AddComponent<AudioSource>();
+        source.clip = attackSound;
+
         isAttack = false;
         speed = fixedspeed;
         ork = this.GetComponent<Rigidbody2D>();
@@ -150,6 +156,8 @@ public class BrownOrkControl : MonoBehaviour {
 
     void attack(float direction)
     {
+        if (PlayerPrefs.GetInt("sound", 1) == 1)
+            source.Play();
         this.animator.SetTrigger("attack");
         StartCoroutine(WaitForAttack());
         throwCarrot(direction);

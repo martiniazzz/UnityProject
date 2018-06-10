@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class LosePanelScript : MonoBehaviour {
 
+    public AudioClip loseSound = null;
+    AudioSource loseSource = null;
+
     public Sprite blueCrSprite;
     public Sprite greenCrSprite;
     public Sprite redCrSprite;
@@ -34,6 +37,15 @@ public class LosePanelScript : MonoBehaviour {
         blueCr = GameObject.Find("BlueCrystalCol").GetComponent<Image>();
         greenCr = GameObject.Find("GreenCrystalCol").GetComponent<Image>();
         redCr = GameObject.Find("RedCrystalCol").GetComponent<Image>();
+    }
+
+    void Start()
+    {
+        Debug.Log("Lose music play");
+        loseSource = gameObject.AddComponent<AudioSource>();
+        loseSource.clip = loseSound;
+        loseSource.loop = false;
+        loseSource.Play();
     }
 
     public void showStatistic(bool blue, bool green, bool red)

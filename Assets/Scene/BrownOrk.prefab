@@ -117,6 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2dcc32c66e27ff4a95847a82abdd8ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackSound: {fileID: 8300000, guid: ece9b14a232f14f48ab9a5e844cb5daf, type: 3}
   len: 3
   prefabCarrot: {fileID: 1801588499684890, guid: 406da9d53e32298418256ae69d77eafc,
     type: 2}

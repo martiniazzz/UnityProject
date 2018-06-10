@@ -7,6 +7,9 @@ using UnityEditor;
 
 public class LevelController : MonoBehaviour {
 
+    public AudioClip music = null;
+    AudioSource musicSource = null;
+
     public static LevelController current;
     private Vector3 startingPosition;
 
@@ -90,6 +93,15 @@ public class LevelController : MonoBehaviour {
 
     private void Start()
     {
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.clip = music;
+        musicSource.loop = true;
+        
+        if (SoundManager.Instance.isMusicOn())
+        {
+            musicSource.Play();
+        }
+
         string name = SceneManager.GetActiveScene().name;
 
         if (name.Equals("Levels"))
@@ -123,6 +135,13 @@ public class LevelController : MonoBehaviour {
 
     void Update()
     {
+        bool is_music_on = PlayerPrefs.GetInt("music", 1) == 1;
+
+        if (!is_music_on)
+            musicSource.Pause();
+        else if (!musicSource.isPlaying)
+            musicSource.Play();
+
         string name = SceneManager.GetActiveScene().name;
         if (name.Equals("Level1"))
         {

@@ -1972,6 +1972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c716f09d95303f4489cf8630577175d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  music: {fileID: 8300000, guid: 57a5b2120c2d04fa9bcb5b2e99ee9361, type: 3}
   lvl: 0
   empty_life: {fileID: 21300000, guid: d53831f2405364d7b936a805bc85fa59, type: 3}
   blueSprite: {fileID: 21300000, guid: bf7ec3f94b9194a8abdaa2bb13ab141d, type: 3}
@@ -1979,6 +1980,7 @@ MonoBehaviour:
   redSprite: {fileID: 21300000, guid: 221616416f4de4d46a64a5cafee0457b, type: 3}
   appleSprite: {fileID: 21300000, guid: a89ec4dd263c14050ab5dd36caadfe97, type: 3}
   passedSprite: {fileID: 21300000, guid: 3ed61d6d191e640c1900478b59042bd1, type: 3}
+  lockSprite: {fileID: 0}
   coins: 0
   fruits: 0
   fruitsMax: 0

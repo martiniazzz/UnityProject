@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GreenOrkControl : MonoBehaviour {
 
+    public AudioClip attackSound = null;
+    AudioSource source = null;
+
     public float len = 2;
 
     Vector3 pointA;
@@ -31,6 +34,9 @@ public class GreenOrkControl : MonoBehaviour {
     }
 
     void Start () {
+        source = gameObject.AddComponent<AudioSource>();
+        source.clip = attackSound;
+
         speed = fixedspeed;
         ork = this.GetComponent<Rigidbody2D>();
         animator = this.GetComponent<Animator>();
@@ -136,6 +142,8 @@ public class GreenOrkControl : MonoBehaviour {
 
     void attack()
     {
+        if (PlayerPrefs.GetInt("sound", 1) == 1)
+            source.Play();
         this.animator.SetTrigger("attack");
         this.speed = 0;
         StartCoroutine(WaitForAttack());

@@ -5,6 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class RabbitControl : MonoBehaviour {
 
+    public AudioClip walkSound = null;
+    public AudioClip dieSound = null;
+    public AudioClip groundSound = null;
+    AudioSource walkSource = null;
+    AudioSource dieSource = null;
+    AudioSource groundSource = null;
+
+
     public static RabbitControl rabbit = null;
 
     public float speed = 2;
@@ -32,6 +40,13 @@ public class RabbitControl : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        walkSource = gameObject.AddComponent<AudioSource>();
+        walkSource.clip = walkSound;
+        dieSource = gameObject.AddComponent<AudioSource>();
+        dieSource.clip = dieSound;
+        groundSource = gameObject.AddComponent<AudioSource>();
+        groundSource.clip = groundSound;
+
         rabbit = this;
         myBody = this.GetComponent<Rigidbody2D>();
         LevelController.current.setStartPosition(transform.position);
@@ -71,9 +86,17 @@ public class RabbitControl : MonoBehaviour {
             Vector2 vel = myBody.velocity;
             vel.x = runVal * speed;
             myBody.velocity = vel;
+            
         }
         if (Mathf.Abs(runVal) > 0 && !JumpActive && isGrounded)
+        {
             animator.SetBool("run", true);
+            if (PlayerPrefs.GetInt("sound", 1) == 1 && !walkSource.isPlaying)
+            {
+                walkSource.Play();
+            }
+                
+        }
         else
             animator.SetBool("run", false);
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -112,7 +135,11 @@ public class RabbitControl : MonoBehaviour {
             }
         }
         if (this.isGrounded)
+        {
             animator.SetBool("jump", false);
+            if (PlayerPrefs.GetInt("sound", 1) == 1)
+                groundSource.Play();
+        }
         else
             animator.SetBool("jump", true);
 
@@ -184,6 +211,8 @@ public class RabbitControl : MonoBehaviour {
     public void die()
     {
         lifes--;
+        if (PlayerPrefs.GetInt("sound", 1) == 1)
+            dieSource.Play();
         animator.SetBool("die", true);
         StartCoroutine(Wait());
     }
@@ -209,6 +238,8 @@ public class RabbitControl : MonoBehaviour {
     public void fall()
     {
         lifes--;
+        if (PlayerPrefs.GetInt("sound", 1) == 1)
+            dieSource.Play();
     }
 
 }

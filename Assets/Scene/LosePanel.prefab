@@ -261,6 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f664149240625d4f91b030058aa9036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loseSound: {fileID: 8300000, guid: 98a18c22aef5542858a6eaf886ac253a, type: 3}
   blueCrSprite: {fileID: 21300000, guid: bf7ec3f94b9194a8abdaa2bb13ab141d, type: 3}
   greenCrSprite: {fileID: 21300000, guid: 4132a536f41a24bcba2f6f110acbb1f1, type: 3}
   redCrSprite: {fileID: 21300000, guid: 221616416f4de4d46a64a5cafee0457b, type: 3}
