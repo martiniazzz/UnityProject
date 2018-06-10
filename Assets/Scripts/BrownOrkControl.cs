@@ -3,15 +3,21 @@ using UnityEngine;
 
 public class BrownOrkControl : MonoBehaviour {
 
+    public float len = 3;
+    public GameObject prefabCarrot;
+
     Vector3 pointA;
     Vector3 pointB;
     float fixedspeed = 1f;
     float speed;
 
-    float rad = 2f;
+    float rad = 5f;
 
     Rigidbody2D ork = null;
     Animator animator;
+
+    float last_carrot = 0;
+    float timeToThrow = 3;
 
     enum Mode
     {
@@ -20,20 +26,20 @@ public class BrownOrkControl : MonoBehaviour {
         Attack
     }
     Mode mode;
+    bool isAttack;
 
-    // Use this for initialization
     void Start () {
+        isAttack = false;
         speed = fixedspeed;
         ork = this.GetComponent<Rigidbody2D>();
         animator = this.GetComponent<Animator>();
         mode = Mode.GoToA;
         pointA = this.transform.position;
         pointB = this.transform.position;
-        pointB.Set(pointA.x + 2, pointB.y, 0);
+        pointB.Set(pointB.x + len, pointB.y, 0);
         animator.SetBool("walk", true);
     }
 	
-	// Update is called once per frame
 	void Update () {
         float value = this.GetDirection();
         if (Mathf.Abs(value) > 0)
@@ -44,23 +50,58 @@ public class BrownOrkControl : MonoBehaviour {
         }
 
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (mode == Mode.GoToA)
+        if (!isAttack && mode == Mode.GoToA)
         {
             sr.flipX = false;
             if (isArrived(pointA))
                 mode = Mode.GoToB;
         }
-        else if (mode == Mode.GoToB)
+        else if (!isAttack && mode == Mode.GoToB)
         {
             sr.flipX = true;
             if (isArrived(pointB))
                 mode = Mode.GoToA;
         }
+
+        Vector3 rabbit_pos = RabbitControl.rabbit.transform.position;
+        Vector3 my_pos = this.transform.position;
+        float direction = 0;
+        if (Mathf.Abs(rabbit_pos.x - my_pos.x) <= rad)
+        {
+            isAttack = true;
+            this.speed = 0;
+            this.animator.SetBool("walk", false);
+            this.animator.SetBool("stay", true);
+            if (my_pos.x < rabbit_pos.x)
+            {
+                sr.flipX = true;
+                direction = 1;
+            }
+            else
+            {
+                sr.flipX = false;
+                direction = -1;
+            }
+            if (Time.time - last_carrot >= timeToThrow)
+            {
+                this.attack(direction);
+                last_carrot = Time.time;
+            }
+        }
+        else
+        {
+            isAttack = false;
+            this.speed = fixedspeed;
+            animator.SetBool("walk", true);
+        }
     }
 
     private float GetDirection()
     {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
         Vector3 my_pos = this.transform.position;
+        if (isAttack)
+            return 0;
         if (mode == Mode.GoToA)
         {
             if (my_pos.x < pointA.x)
@@ -91,14 +132,13 @@ public class BrownOrkControl : MonoBehaviour {
         Vector3 pos = this.transform.position;
         pos.z = 0;
         target.z = 0;
-        return Vector3.Distance(pos, target) < 0.02f;
+        return Vector3.Distance(pos, target) < 0.2f;
     }
 
     void OnCollisionEnter2D(Collision2D collider)
     {
         if (collider.gameObject.name == "Rabbit")
         {
-            Debug.Log("Rabit entered");
             Vector3 rabit = RabbitControl.rabbit.transform.position;
             Vector3 ork = this.GetComponent<Collider2D>().bounds.size;
             if (rabit.y >= this.transform.position.y + ork.y / 2)
@@ -108,12 +148,23 @@ public class BrownOrkControl : MonoBehaviour {
         }
     }
 
-    void attack()
+    void attack(float direction)
     {
         this.animator.SetTrigger("attack");
-        this.speed = 0;
         StartCoroutine(WaitForAttack());
-        this.speed = fixedspeed;
+        throwCarrot(direction);
+    }
+
+    void throwCarrot(float direction)
+    {
+        GameObject obj = GameObject.Instantiate(this.prefabCarrot);
+        Vector3 orkSize = this.GetComponent<Collider2D>().bounds.size;
+        Transform carrotPos = this.transform;
+        float x = carrotPos.position.x + 0.5f;
+        float y = carrotPos.position.y + orkSize.y / 2;
+        obj.transform.position = new Vector3(x, y, 0.0f);
+        Carrot carrot = obj.GetComponent<Carrot>();
+        carrot.launch(direction);
     }
 
     void die()

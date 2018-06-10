@@ -4,19 +4,34 @@ using UnityEngine;
 
 public class FruitCollectable : Collectable {
 
+    bool canCollect = true;
+
     protected override void OnRabitHit(RabbitControl rabit)
     {
-        LevelController.current.addFruits(1);
-        this.CollectedHide();
+        if (canCollect)
+        {
+            LevelController.current.addFruits(1);
+            string name = this.gameObject.name;
+            LevelController.current.levelStatus.collectedFruitsList.Add(name);
+            this.CollectedHide();
+        }
+        
     }
 
-    // Use this for initialization
     void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        string str = PlayerPrefs.GetString("stats" + LevelController.current.lvl, null);
+        LevelStatus levelStatus = JsonUtility.FromJson<LevelStatus>(str);
+        string name = this.gameObject.name;
+        foreach (string n in LevelController.current.levelStatus.collectedFruitsList)
+        {
+            if (n.Equals(name))
+            {
+                canCollect = false;
+                Color oldColor = this.GetComponent<Renderer>().material.color;
+                Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, 0.5f);
+                this.GetComponent<Renderer>().material.color = newColor;
+            }
+        }  
+
+    }
 }

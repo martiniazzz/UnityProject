@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 79d56dd407180fc4a8dfd6366272392a
+timeCreated: 1528553790
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - blueCrSprite: {fileID: 21300000, guid: bf7ec3f94b9194a8abdaa2bb13ab141d, type: 3}
+  - greenCrSprite: {fileID: 21300000, guid: 4132a536f41a24bcba2f6f110acbb1f1, type: 3}
+  - redCrSprite: {fileID: 21300000, guid: 221616416f4de4d46a64a5cafee0457b, type: 3}
+  - closeButton: {instanceID: 0}
+  - bgButton: {instanceID: 0}
+  - toMenuButton: {instanceID: 0}
+  - replayButton: {instanceID: 0}
+  - fruitsInfo: {instanceID: 0}
+  - coinsInfo: {instanceID: 0}
+  - blueCr: {instanceID: 0}
+  - greenCr: {instanceID: 0}
+  - redCr: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

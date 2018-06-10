@@ -25,10 +25,9 @@ public class GreenOrkControl : MonoBehaviour {
 
     private void Awake()
     {
-        pointA = this.transform.localPosition;
-        pointB = this.transform.localPosition;
+        pointA = this.transform.position;
+        pointB = this.transform.position;
         pointB.Set(pointB.x + len, pointB.y, 0);
-        Debug.Log(pointA + "  " + pointB);
     }
 
     void Start () {
@@ -69,8 +68,8 @@ public class GreenOrkControl : MonoBehaviour {
         }
 
         Vector3 rabbit_pos = RabbitControl.rabbit.transform.position;
-        Vector3 my_pos = this.transform.localPosition;
-        if (rabbit_pos.x >= Mathf.Min(pointA.x, pointB.x) && rabbit_pos.x <= Mathf.Max(pointA.x, pointB.x))
+        Vector3 my_pos = this.transform.position;
+        if (rabbit_pos.x > Mathf.Min(pointA.x, pointB.x) && rabbit_pos.x < Mathf.Max(pointA.x, pointB.x))
         {
             isAttack = true;
         }
@@ -84,7 +83,7 @@ public class GreenOrkControl : MonoBehaviour {
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         Vector3 rabbit_pos = RabbitControl.rabbit.transform.position;
-        Vector3 my_pos = this.transform.localPosition;
+        Vector3 my_pos = this.transform.position;
         if (isAttack)
         {
             if (my_pos.x < rabbit_pos.x)
@@ -111,17 +110,16 @@ public class GreenOrkControl : MonoBehaviour {
 
     bool isArrived(Vector3 target)
     {
-        Vector3 pos = this.transform.localPosition;
+        Vector3 pos = this.transform.position;
         pos.z = 0;
         target.z = 0;
-        return Vector3.Distance(pos, target) < 0.02f;
+        return Vector3.Distance(pos, target) < 0.2f;
     }
 
     void OnCollisionEnter2D(Collision2D collider)
     {
         if (collider.gameObject.name == "Rabbit")
         {
-            Debug.Log("Rabit entered");
             Vector3 rabit = RabbitControl.rabbit.transform.position;
             Vector3 ork = this.GetComponent<Collider2D>().bounds.size;
             if (rabit.y >= this.transform.position.y + ork.y / 2)
@@ -131,7 +129,6 @@ public class GreenOrkControl : MonoBehaviour {
             else
             {
                 attack();
-                Debug.Log("Attack");
                 RabbitControl.rabbit.die();
             }
         }

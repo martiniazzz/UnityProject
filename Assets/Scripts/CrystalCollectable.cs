@@ -4,6 +4,19 @@ using UnityEngine;
 
 public class CrystalCollectable : Collectable {
 
+    private void Start()
+    {
+        string str = PlayerPrefs.GetString("stats" + LevelController.current.lvl, null);
+        LevelStatus levelStatus = JsonUtility.FromJson<LevelStatus>(str);
+        string name = this.gameObject.name;
+        if (name.Equals("gem-2") && levelStatus.hasBlueCrystal)
+            this.CollectedHide();
+        else if (name.Equals("gem-3") && levelStatus.hasGreenCrystal)
+            this.CollectedHide();
+        else if (name.Equals("gem-1") && levelStatus.hasRedCrystal)
+            this.CollectedHide();
+    }
+
     protected override void OnRabitHit(RabbitControl rabit)
     {
         string name = this.gameObject.name;
